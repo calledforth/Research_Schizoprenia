@@ -488,8 +488,8 @@ def create_sspnet_model(
     """
     model = SSPNet3DCNN(input_shape=input_shape, num_classes=num_classes)
 
-    # Build the model
-    model.build(input_shape=(None,) + input_shape)
+    # Build by running a dummy forward pass to ensure layers are initialized
+    _ = model(tf.zeros((1,) + input_shape))
 
     # Print parameter counts
     param_counts = model.count_parameters()

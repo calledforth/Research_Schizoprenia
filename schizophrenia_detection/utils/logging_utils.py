@@ -3,6 +3,7 @@ Logging configuration utilities
 """
 
 import os
+import numpy as np
 import logging
 import sys
 from datetime import datetime

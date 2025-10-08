@@ -13,11 +13,18 @@ This module implements a comprehensive MEG preprocessing pipeline including:
 - Spatial processing with smoothing and resampling
 """
 
+# Ensure runtime does not attempt to resolve annotations (avoids mne attribute errors)
+from __future__ import annotations
+
 import os
 import logging
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Dict, List, Tuple, Optional, Union, TYPE_CHECKING
 from pathlib import Path
+
+# Type checking-only imports for precise MNE types
+if TYPE_CHECKING:
+    from mne.bem import ConductorModel
 
 # Neuroimaging libraries
 import mne
@@ -346,7 +353,7 @@ class MEGPreprocessor:
         self,
         subject: str = "fsaverage",
         conductivity: Tuple[float, float, float] = (0.3, 0.006, 0.3),
-    ) -> mne.Bem:
+    ) -> ConductorModel:
         """
         Create single-shell boundary element model
 
@@ -355,7 +362,7 @@ class MEGPreprocessor:
             conductivity (Tuple): Conductivity values for the BEM model
 
         Returns:
-            mne.Bem: BEM model
+            ConductorModel: BEM solution (single-shell)
         """
         try:
             logger.info("Creating single-shell BEM model")
@@ -380,7 +387,7 @@ class MEGPreprocessor:
         self,
         raw: mne.io.Raw,
         src: mne.SourceSpaces,
-        bem: mne.Bem,
+        bem: ConductorModel,
         trans: Optional[str] = None,
     ) -> mne.Forward:
         """
